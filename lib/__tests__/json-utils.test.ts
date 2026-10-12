@@ -103,15 +103,35 @@ describe("toYAML quotes strings YAML would read as other types", () => {
     [".NaN", '".NaN"'],
     ["2026-04-15", '"2026-04-15"'],
     ["2026-04-15T10:00:00Z", '"2026-04-15T10:00:00Z"'],
+    ["1:30", '"1:30"'],
+    ["12:30:45", '"12:30:45"'],
+    ["1:30.5", '"1:30.5"'],
+    ["1_000", '"1_000"'],
+    ["1_000.5", '"1_000.5"'],
+    ["0x_1F", '"0x_1F"'],
+    ["0b1010_0111", '"0b1010_0111"'],
+    ["0b101", '"0b101"'],
+    ["+0b101", '"+0b101"'],
+    ["y", '"y"'],
+    ["N", '"N"'],
+    ["=", '"="'],
+    ["<<", '"<<"'],
+    ["2001-1-1 1:00:00", '"2001-1-1 1:00:00"'],
   ])("quotes %s", (input, expected) => {
     const out = toYAML(JSON.stringify({ a: input }));
     expect(out.ok).toBe(true);
     if (out.ok) expect(out.value).toBe(`a: ${expected}\n`);
   });
 
-  it.each(["1.4.0", "v2", "hello"])("leaves %s unquoted", (input) => {
+  it.each(["1.4.0", "v2", "hello", "1,000", "_1", "0b2", "a:b"])("leaves %s unquoted", (input) => {
     const out = toYAML(JSON.stringify({ a: input }));
     expect(out.ok).toBe(true);
     if (out.ok) expect(out.value).toBe(`a: ${input}\n`);
+  });
+
+  it('quotes YAML 1.1-like keys as well as values', () => {
+    const out = toYAML(JSON.stringify({ '<<': 'x' }));
+    expect(out.ok).toBe(true);
+    if (out.ok) expect(out.value).toBe('"<<": x\n');
   });
 });

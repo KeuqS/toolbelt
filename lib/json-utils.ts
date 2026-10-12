@@ -296,11 +296,14 @@ function needsQuote(s: string): boolean {
   if (/^[\s-?:,\[\]{}#&*!|>'"%@`]/.test(s)) return true;
   if (/[\s:#]$/.test(s)) return true;
   if (/^(true|false|null|yes|no|on|off|~)$/i.test(s)) return true;
+  if (/^(y|n|=|<<)$/i.test(s)) return true;
   if (/^-?\d+(\.\d+)?([eE][+-]?\d+)?$/.test(s)) return true;
   if (/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(s)) return true;
-  if (/^[+-]?0([xX][0-9a-fA-F]+|[oO][0-7]+)$/.test(s)) return true;
+  if (/^[+-]?0([xX][0-9a-fA-F]+|[oO][0-7]+|[bB][01]+)$/.test(s)) return true;
+  if (/^[+-]?\d+(?::\d{2})+(?:\.\d+)?$/.test(s)) return true;
+  if (/^[+-]?(?:\d[\d_]*_\d[\d_]*(?:\.\d[\d_]*)?|0[xX][0-9a-fA-F_]*_[0-9a-fA-F_]*|0[bB][01_]*_[01_]*|0[oO][0-7_]*_[0-7_]*)$/.test(s)) return true;
   if (/^[+-]?\.(inf|nan)$/i.test(s)) return true;
-  if (/^\d{4}-\d{2}-\d{2}(?:[Tt ].*)?$/.test(s)) return true;
+  if (/^\d{4}-\d{1,2}-\d{1,2}(?:[Tt ].*)?$/.test(s)) return true;
   if (/[:#]\s|\s#/.test(s)) return true;
   if (/[\n\t\r"]/.test(s)) return true;
   return false;
